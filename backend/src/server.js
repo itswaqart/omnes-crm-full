@@ -19,14 +19,23 @@ app.use(helmet());
 app.set("trust proxy", 1);
 
 // ── CORS ──────────────────────────────────────────────────────
-const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:5173")
-  .split(",").map(s => s.trim());
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ||
+  "http://localhost:5173,https://voluble-rabanadas-e41624.netlify.app/"
+)
+  .split(",")
+  .map(s => s.trim());
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) cb(null, true);
-    else cb(new Error(`CORS: Origin ${origin} not allowed`));
+    if (!origin || allowedOrigins.includes(origin)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`CORS: Origin ${origin} not allowed`));
+    }
   },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
 
